@@ -51,6 +51,7 @@ class Dispatcher(object):
 
         bot_message = BotMessage(text=message.get("text"),
                                  data={"elements": message.get("elements"),
+                                       "quick_replies": message.get("quick_replies"),
                                        "buttons": message.get("buttons"),
                                        "attachment": message.get("image")})
 

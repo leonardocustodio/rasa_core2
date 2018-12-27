@@ -161,6 +161,23 @@ class MessengerBot(OutputChannel):
                                        {"sender": {"id": recipient_id}},
                                        'RESPONSE')
 
+    def send_quick_replies(self, recipient_id, text, quick_replies, **kwargs):
+        # type: (Text, Text, List[Dict[Text, Any]], Any) -> None
+        """Sends quick replies to the output."""
+
+        self._add_text_info(quick_replies)
+
+        # Currently there is no predefined way to create a message with
+        # custom quick_replies in the fbmessenger framework - so we need to create the
+        # payload on our own
+        payload = {
+            "text": text,
+            "quick_replies": quick_replies
+        }
+        self.messenger_client.send(payload,
+                                   {"sender": {"id": recipient_id}},
+                                   'RESPONSE')
+
     def send_custom_message(self, recipient_id: Text,
                             elements: List[Dict[Text, Any]]) -> None:
         """Sends elements to the output."""
@@ -187,6 +204,15 @@ class MessengerBot(OutputChannel):
         for button in buttons:
             if 'type' not in button:
                 button['type'] = "postback"
+
+    @staticmethod
+    def _add_text_info(quick_replies):
+        # type: (List[Dict[Text, Any]]) -> None
+        """Set the quick reply type to text for all buttons without content type.
+        Happens in place."""
+        for quick_reply in quick_replies:
+            if 'content_type' not in quick_reply:
+                quick_reply['content_type'] = "text"
 
     @staticmethod
     def _recipient_json(recipient_id: Text) -> Dict[Text, Dict[Text, Text]]:
