@@ -147,10 +147,15 @@ class OutputChannel(object):
         if message.get("elements"):
             self.send_custom_message(recipient_id, message.get("elements"))
 
-        if message.get("quick_replies"):
+        elif message.get("quick_replies"):
             self.send_quick_replies(recipient_id,
                                     message.get("text"),
                                     message.get("quick_replies"))
+
+        elif message.get("pass_thread_control"):
+            self.send_pass_thread_control(recipient_id,
+                                          message.get("target_app_id"),
+                                          message.get("metadata"))
 
         elif message.get("buttons"):
             self.send_text_with_buttons(recipient_id,
@@ -207,6 +212,10 @@ class OutputChannel(object):
         for idx, button in enumerate(buttons):
             button_msg = button_to_string(button, idx)
             self.send_text_message(recipient_id, button_msg)
+
+    def send_pass_thread_control(self, recipient_id, target_app_id, metadata, **kwargs):
+        self.send_pass_thread_control(recipient_id, target_app_id, metadata)
+
 
     def send_custom_message(self,
                             recipient_id: Text,

@@ -189,6 +189,15 @@ class MessengerBot(OutputChannel):
                                    {"sender": {"id": recipient_id}},
                                    'RESPONSE')
 
+    def send_pass_thread_control(self, recipient_id, target_app_id, metadata, **kwargs):
+        payload = {
+            "target_app_id": target_app_id,
+            "metadata": metadata
+        }
+        self.messenger_client.send(payload,
+                                   {"sender": {"id": recipient_id}},
+                                   'RESPONSE')
+
     def send_custom_message(self, recipient_id: Text,
                             elements: List[Dict[Text, Any]]) -> None:
         """Sends elements to the output."""
