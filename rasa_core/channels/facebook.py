@@ -60,7 +60,7 @@ class Messenger(BaseMessenger):
         elif self._is_user_location(message):
             attachment = message['message']['attachments'][0]
             coordinates = attachment['payload']['coordinates']
-            text = "Latitude: {} e Longitude: {}".format(coordinates['lat'], coordinates['long'])
+            text = "{} {}".format(coordinates['lat'], coordinates['long'])
         else:
             logger.warning("Received a message from facebook that we can not "
                            "handle. Message: {}".format(message))
