@@ -152,11 +152,6 @@ class OutputChannel(object):
                                     message.get("text"),
                                     message.get("quick_replies"))
 
-        elif message.get("pass_thread_control"):
-            self.send_pass_thread_control(recipient_id,
-                                          message.get("target_app_id"),
-                                          message.get("metadata"))
-
         elif message.get("buttons"):
             self.send_text_with_buttons(recipient_id,
                                         message.get("text"),
@@ -166,6 +161,10 @@ class OutputChannel(object):
                                    message.get("text"))
 
         # if there is an image we handle it separately as an attachment
+        if message.get("pass_thread_control"):
+            self.send_pass_thread_control(recipient_id,
+                                          message.get("pass_thread_control"))
+
         if message.get("image"):
             self.send_image_url(recipient_id, message.get("image"))
 
@@ -213,8 +212,8 @@ class OutputChannel(object):
             button_msg = button_to_string(button, idx)
             self.send_text_message(recipient_id, button_msg)
 
-    def send_pass_thread_control(self, recipient_id, target_app_id, metadata, **kwargs):
-        self.send_pass_thread_control(recipient_id, target_app_id, metadata)
+    def send_pass_thread_control(self, recipient_id, pass_thread_control, **kwargs):
+        self.send_pass_thread_control(recipient_id, pass_thread_control)
 
 
     def send_custom_message(self,

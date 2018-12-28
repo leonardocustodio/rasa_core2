@@ -189,10 +189,10 @@ class MessengerBot(OutputChannel):
                                    {"sender": {"id": recipient_id}},
                                    'RESPONSE')
 
-    def send_pass_thread_control(self, recipient_id, target_app_id, metadata, **kwargs):
+    def send_pass_thread_control(self, recipient_id, pass_thread_control, **kwargs):
         payload = {
-            "target_app_id": target_app_id,
-            "metadata": metadata
+            "target_app_id": pass_thread_control['target_app_id'],
+            "metadata": pass_thread_control['metadata']
         }
         self.messenger_client.send(payload,
                                    {"sender": {"id": recipient_id}},
