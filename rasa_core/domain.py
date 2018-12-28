@@ -34,7 +34,6 @@ class InvalidDomain(Exception):
 
 def check_domain_sanity(domain):
     """Make sure the domain is properly configured.
-
     Checks the settings and checks if there are duplicate actions,
     intents, slots and entities."""
 
@@ -75,7 +74,6 @@ def check_domain_sanity(domain):
 
 class Domain(object):
     """The domain specifies the universe in which the bot's policy acts.
-
     A Domain subclass provides the actions the bot can take, the intents
     and entities it can recognise"""
 
@@ -112,7 +110,6 @@ class Domain(object):
 
     def merge(self, domain: 'Domain', override: bool = False) -> 'Domain':
         """Merge this domain with another one, combining their attributes.
-
         List attributes like ``intents`` and ``actions`` will be deduped
         and merged. Single attributes will be taken from ``self`` unless
         override is `True`, in which case they are taken from ``domain``."""
@@ -293,7 +290,6 @@ class Domain(object):
                          action_endpoint: Optional[EndpointConfig]
                          ) -> Optional[Action]:
         """Integer index corresponding to an actions index in the action list.
-
         This method resolves the index to the actions name."""
 
         if self.num_actions <= index or index < 0:
@@ -522,7 +518,6 @@ class Domain(object):
 
     def compare_with_specification(self, path: Text) -> bool:
         """Compares the domain spec of the current and the loaded domain.
-
         Throws exception if the loaded domain specification is different
         to the current domain are different."""
 
@@ -568,7 +563,6 @@ class Domain(object):
 
     def persist_clean(self, filename: Text) -> None:
         """Write domain to a file.
-
          Strips redundant keys with default values."""
 
         data = self.as_dict()

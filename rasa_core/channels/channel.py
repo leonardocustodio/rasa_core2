@@ -160,11 +160,12 @@ class OutputChannel(object):
             self.send_text_message(recipient_id,
                                    message.get("text"))
 
-        # if there is an image we handle it separately as an attachment
         if message.get("pass_thread_control"):
+            utils.print_color("Trying to pass thread control", utils.bcolors.OKBLUE)
             self.send_pass_thread_control(recipient_id,
                                           message.get("pass_thread_control"))
 
+        # if there is an image we handle it separately as an attachment
         if message.get("image"):
             self.send_image_url(recipient_id, message.get("image"))
 
@@ -213,6 +214,7 @@ class OutputChannel(object):
             self.send_text_message(recipient_id, button_msg)
 
     def send_pass_thread_control(self, recipient_id, pass_thread_control, **kwargs):
+        print("Trying to pass thread control!!!!")
         self.send_pass_thread_control(recipient_id, pass_thread_control)
 
 

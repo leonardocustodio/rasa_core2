@@ -37,6 +37,9 @@ def print_bot_output(message, color=utils.bcolors.OKBLUE):
             element_str = "Quick Replies:\n" + button_to_string(element, idx)
             utils.print_color(element_str, color)
 
+    if "pass_thread_control" in message:
+        utils.print_color("Pass Thread Control: " + message.get("pass_thread_control"), color)
+
 
 def get_cmd_input():
     return input().strip()
