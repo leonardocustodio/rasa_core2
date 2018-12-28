@@ -42,6 +42,13 @@ class Messenger(BaseMessenger):
                 message['message'].get('text') and
                 not message['message'].get("is_echo"))
 
+    @staticmethod
+    def _is_user_location(message: Dict[Text, Any]) -> bool:
+        """Check if the users message is a recorced voice message."""
+        return (message.get('message') and
+                message['message'].get('attachments') and
+                message['message']['attachments'][0]['type'] == 'location')
+
     def message(self, message: Dict[Text, Any]) -> None:
         """Handle an incoming event from the fb webhook."""
 
@@ -50,6 +57,10 @@ class Messenger(BaseMessenger):
         elif self._is_audio_message(message):
             attachment = message['message']['attachments'][0]
             text = attachment['payload']['url']
+        elif self._is_user_location(message):
+            attachment = message['message']['attachments'][0]
+            coordinates = attachment['payload']['coordinates']
+            text = "Latitude: {} e Longitude: {}".format(coordinates['lat'], coordinates['long'])
         else:
             logger.warning("Received a message from facebook that we can not "
                            "handle. Message: {}".format(message))
