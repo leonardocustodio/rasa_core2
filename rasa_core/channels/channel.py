@@ -163,7 +163,8 @@ class OutputChannel(object):
 
         if message.get("pass_thread_control"):
             self.send_pass_thread_control(recipient_id,
-                                          message.get("pass_thread_control"))
+                                          message.get("pass_thread_control")[0]["target_app_id"],
+                                          message.get("pass_thread_control")[0]["metadata"])
 
         # if there is an image we handle it separately as an attachment
         if message.get("image"):
@@ -213,8 +214,8 @@ class OutputChannel(object):
             button_msg = button_to_string(button, idx)
             self.send_text_message(recipient_id, button_msg)
 
-    def send_pass_thread_control(self, recipient_id, pass_thread_control, **kwargs):
-        self.send_pass_thread_control(recipient_id, pass_thread_control)
+    def send_pass_thread_control(self, recipient_id, app_id, metadata, **kwargs):
+        self.send_pass_thread_control(recipient_id, app_id, metadata)
 
 
     def send_custom_message(self,

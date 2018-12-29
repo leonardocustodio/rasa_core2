@@ -22,10 +22,12 @@ class Messenger(BaseMessenger):
 
     def __init__(self,
                  page_access_token: Text,
-                 on_new_message: Callable[[UserMessage], None]) -> None:
+                 on_new_message: Callable[[UserMessage], None],
+                 thread_control_authorized: List[int]) -> None:
 
         self.page_access_token = page_access_token
         self.on_new_message = on_new_message
+        self.thread_control_authorized = thread_control_authorized
         super(Messenger, self).__init__(self.page_access_token)
 
     @staticmethod
@@ -48,6 +50,12 @@ class Messenger(BaseMessenger):
         return (message.get('message') and
                 message['message'].get('attachments') and
                 message['message']['attachments'][0]['type'] == 'location')
+
+    @staticmethod
+    def _is_request_thread_control(message: Dict[Text, Any]) -> bool:
+        """Check if facebook is requesting thread control."""
+        return (message.get('request_thread_control') and
+                message['request_thread_control'].get('requested_owner_app_id'))
 
 
     def message(self, message: Dict[Text, Any]) -> None:
@@ -110,8 +118,17 @@ class Messenger(BaseMessenger):
         pass
 
     def handover(self, message: Dict[Text, Any]) -> None:
-        print("Handover!!!")
-        pass
+
+        print("Handover: {}".format(message))
+
+        if self._is_request_thread_control(message):
+            if not message['request_thread_control']['requested_owner_app_id'] in self.thread_control_authorized:
+                logger.warning("Received a request thread control from facebook"
+                               "from an app that is not authorized: {}".format(message))
+                pass
+            else:
+                MessengerBot(self.client).send_pass_thread_control(self.get_user_id(), message['request_thread_control']['requested_owner_app_id'], message['request_thread_control']['metadata'])
+
 
 
 class MessengerBot(OutputChannel):
@@ -197,11 +214,11 @@ class MessengerBot(OutputChannel):
                                    {"sender": {"id": recipient_id}},
                                    'RESPONSE')
 
-    def send_pass_thread_control(self, recipient_id, pass_thread_control, **kwargs):
+    def send_pass_thread_control(self, recipient_id, app_id, metadata, **kwargs):
         print("Recipient ID: {}".format(recipient_id))
         payload = {
-            "target_app_id": pass_thread_control[0]['target_app_id'],
-            "metadata": pass_thread_control[0]['metadata']
+            "target_app_id": app_id,
+            "metadata": metadata
         }
         self.messenger_client.send(payload,
                                    {"sender": {"id": recipient_id}},
@@ -263,10 +280,11 @@ class FacebookInput(InputChannel):
 
         return cls(credentials.get("verify"),
                    credentials.get("secret"),
-                   credentials.get("page-access-token"))
+                   credentials.get("page-access-token"),
+                   credentials.get("thread-control-authorized"))
 
     def __init__(self, fb_verify: Text, fb_secret: Text,
-                 fb_access_token: Text) -> None:
+                 fb_access_token: Text, fb_thread_control_authorized: List[int]) -> None:
         """Create a facebook input channel.
 
         Needs a couple of settings to properly authenticate and validate
@@ -283,6 +301,7 @@ class FacebookInput(InputChannel):
         self.fb_verify = fb_verify
         self.fb_secret = fb_secret
         self.fb_access_token = fb_access_token
+        self.fb_thread_control_authorized = fb_thread_control_authorized
 
     def blueprint(self, on_new_message):
 
@@ -311,7 +330,7 @@ class FacebookInput(InputChannel):
                                "secret in your facebook app settings")
                 return "not validated"
 
-            messenger = Messenger(self.fb_access_token, on_new_message)
+            messenger = Messenger(self.fb_access_token, on_new_message, self.fb_thread_control_authorized)
 
             messenger.handle(request.get_json(force=True))
             return "success"
