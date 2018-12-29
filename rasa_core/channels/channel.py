@@ -45,6 +45,7 @@ class UserMessage(object):
         self.input_channel = input_channel
 
         self.parse_data = parse_data
+        print("Parse data: {}".format(parse_data))
 
 
 def register(input_channels: List['InputChannel'],
@@ -161,7 +162,6 @@ class OutputChannel(object):
                                    message.get("text"))
 
         if message.get("pass_thread_control"):
-            utils.print_color("Trying to pass thread control", utils.bcolors.OKBLUE)
             self.send_pass_thread_control(recipient_id,
                                           message.get("pass_thread_control"))
 
@@ -214,7 +214,6 @@ class OutputChannel(object):
             self.send_text_message(recipient_id, button_msg)
 
     def send_pass_thread_control(self, recipient_id, pass_thread_control, **kwargs):
-        print("Trying to pass thread control!!!!")
         self.send_pass_thread_control(recipient_id, pass_thread_control)
 
 
@@ -329,6 +328,7 @@ class RestInput(InputChannel):
     @staticmethod
     def on_message_wrapper(on_new_message, text, queue, sender_id):
         collector = QueueOutputChannel(queue)
+        print("On Text: {}".format(text))
 
         message = UserMessage(text, collector, sender_id,
                               input_channel=RestInput.name())
@@ -369,6 +369,7 @@ class RestInput(InputChannel):
 
         @custom_webhook.route("/webhook", methods=['POST'])
         def receive():
+            print("Request: {}".format(request))
             sender_id = self._extract_sender(request)
             text = self._extract_message(request)
             should_use_stream = utils.bool_arg("stream", default=False)

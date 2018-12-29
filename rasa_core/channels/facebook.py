@@ -49,8 +49,10 @@ class Messenger(BaseMessenger):
                 message['message'].get('attachments') and
                 message['message']['attachments'][0]['type'] == 'location')
 
+
     def message(self, message: Dict[Text, Any]) -> None:
         """Handle an incoming event from the fb webhook."""
+        print("Message: {}".format(message))
 
         if self._is_user_message(message):
             text = message['message']['text']
@@ -70,12 +72,14 @@ class Messenger(BaseMessenger):
 
     def postback(self, message: Dict[Text, Any]) -> None:
         """Handle a postback (e.g. quick reply button)."""
+        print("Handling postback: {}".format(message))
 
         text = message['postback']['payload']
         self._handle_user_message(text, self.get_user_id())
 
     def _handle_user_message(self, text: Text, sender_id: Text) -> None:
         """Pass on the text to the dialogue engine for processing."""
+        print("Handling User Message: {}".format(text))
 
         out_channel = MessengerBot(self.client)
         user_msg = UserMessage(text, out_channel, sender_id,
@@ -103,6 +107,10 @@ class Messenger(BaseMessenger):
 
     def optin(self, message: Dict[Text, Any]) -> None:
         """Do nothing. Method to handle `messaging_optins`"""
+        pass
+
+    def handover(self, message: Dict[Text, Any]) -> None:
+        print("Handover!!!")
         pass
 
 
@@ -190,9 +198,10 @@ class MessengerBot(OutputChannel):
                                    'RESPONSE')
 
     def send_pass_thread_control(self, recipient_id, pass_thread_control, **kwargs):
+        print("Recipient ID: {}".format(recipient_id))
         payload = {
-            "target_app_id": pass_thread_control['target_app_id'],
-            "metadata": pass_thread_control['metadata']
+            "target_app_id": pass_thread_control[0]['target_app_id'],
+            "metadata": pass_thread_control[0]['metadata']
         }
         self.messenger_client.send(payload,
                                    {"sender": {"id": recipient_id}},
