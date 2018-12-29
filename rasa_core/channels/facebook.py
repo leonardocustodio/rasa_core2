@@ -221,7 +221,7 @@ class MessengerBot(OutputChannel):
             "metadata": metadata
         }
         self.messenger_client.send(payload,
-                                   {"sender": {"id": recipient_id}},
+                                   {"recipient": {"id": recipient_id}},
                                    'RESPONSE')
 
     def send_custom_message(self, recipient_id: Text,
