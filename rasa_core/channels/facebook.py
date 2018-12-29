@@ -216,13 +216,9 @@ class MessengerBot(OutputChannel):
 
     def send_pass_thread_control(self, recipient_id, app_id, metadata, **kwargs):
         print("Recipient ID: {}".format(recipient_id))
-        payload = {
-            "target_app_id": app_id,
-            "metadata": metadata
-        }
-        self.messenger_client.send(payload,
-                                   {"recipient": {"id": recipient_id}},
-                                   'RESPONSE')
+        self.messenger_client.pass_thread_control(app_id,
+                                                  metadata,
+                                                  {"recipient": {"id": recipient_id}})
 
     def send_custom_message(self, recipient_id: Text,
                             elements: List[Dict[Text, Any]]) -> None:
