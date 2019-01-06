@@ -166,6 +166,10 @@ class OutputChannel(object):
                                           message.get("pass_thread_control")[0]["target_app_id"],
                                           message.get("pass_thread_control")[0]["metadata"])
 
+        elif message.get("take_thread_control"):
+            self.send_take_thread_control(recipient_id,
+                                          message.get("take_thread_control")[0]["metadata"])
+
         # if there is an image we handle it separately as an attachment
         if message.get("image"):
             self.send_image_url(recipient_id, message.get("image"))
@@ -217,6 +221,8 @@ class OutputChannel(object):
     def send_pass_thread_control(self, recipient_id, app_id, metadata, **kwargs):
         self.send_pass_thread_control(recipient_id, app_id, metadata)
 
+    def send_take_thread_control(self, recipient_id, metadata, **kwargs):
+        self.send_take_thread_control(recipient_id, metadata)
 
     def send_custom_message(self,
                             recipient_id: Text,

@@ -220,6 +220,11 @@ class MessengerBot(OutputChannel):
                                                   metadata,
                                                   {"recipient": {"id": recipient_id}})
 
+    def send_take_thread_control(self, recipient_id, metadata, **kwargs):
+        print("Take Control - Recipient ID: {}".format(recipient_id))
+        self.messenger_client.take_thread_control(metadata,
+                                                  {"recipient": {"id": recipient_id}})
+
     def send_custom_message(self, recipient_id: Text,
                             elements: List[Dict[Text, Any]]) -> None:
         """Sends elements to the output."""
