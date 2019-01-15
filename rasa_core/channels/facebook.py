@@ -57,6 +57,11 @@ class Messenger(BaseMessenger):
         return (message.get('request_thread_control') and
                 message['request_thread_control'].get('requested_owner_app_id'))
 
+    @staticmethod
+    def _is_pass_thread_control(message: Dict[Text, Any]) -> bool:
+        """Check if facebook is passing thread control."""
+        return (message.get('pass_thread_control') and
+                message['pass_thread_control'].get('new_owner_app_id'))
 
     def message(self, message: Dict[Text, Any]) -> None:
         """Handle an incoming event from the fb webhook."""
@@ -129,6 +134,8 @@ class Messenger(BaseMessenger):
             else:
                 MessengerBot(self.client).send_pass_thread_control(self.get_user_id(), message['request_thread_control']['requested_owner_app_id'], message['request_thread_control']['metadata'])
 
+        elif self._is_pass_thread_control(message):
+            self._handle_user_message('User has reconnected', self.get_user_id())
 
 
 class MessengerBot(OutputChannel):
