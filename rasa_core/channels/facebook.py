@@ -133,9 +133,10 @@ class Messenger(BaseMessenger):
                 pass
             else:
                 MessengerBot(self.client).send_pass_thread_control(self.get_user_id(), message['request_thread_control']['requested_owner_app_id'], message['request_thread_control']['metadata'])
+                self._handle_user_message('/passed_thread_control', self.get_user_id())
 
         elif self._is_pass_thread_control(message):
-            self._handle_user_message('User has reconnected', self.get_user_id())
+            self._handle_user_message('/reconnect_user', self.get_user_id())
 
 
 class MessengerBot(OutputChannel):
