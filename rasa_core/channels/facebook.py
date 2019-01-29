@@ -67,6 +67,10 @@ class Messenger(BaseMessenger):
         """Handle an incoming event from the fb webhook."""
         print("Message: {}".format(message))
 
+        if len(message['message']['text']) > 512:
+            self._handle_user_message('/long_text', self.get_user_id())
+            return
+
         if self._is_user_message(message):
             text = message['message']['text']
         elif self._is_audio_message(message):
