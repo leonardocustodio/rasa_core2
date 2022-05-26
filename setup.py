@@ -35,7 +35,7 @@ install_requires = [
     "scipy~=1.1",
     "typing~=3.0",
     "requests~=2.20",
-    "tensorflow==1.10.0",
+    "tensorflow==2.7.2",
     "h5py~=2.0",
     "apscheduler~=3.0",
     "tqdm~=4.0",
